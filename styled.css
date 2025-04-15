@@ -164,6 +164,9 @@ nav a:hover {
 .search-container {
     text-align: center;
     margin-bottom: 20px;
+
+    margin-left: 70px;
+    margin-right: 70px;
 }
 
 .search-container input {
