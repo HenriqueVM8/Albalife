@@ -54,13 +54,11 @@ nav a:hover {
     text-align: center;
     border-radius: 10px;
     margin-bottom: 40px;
-    margin-top: 20px;
 }
 
 .hero h2 {
     color: #4CAF50;
     margin-bottom: 20px;
-    margin-top: 10px;
 }
 
 .hero p {
@@ -76,6 +74,7 @@ nav a:hover {
     border-radius: 5px;
     font-weight: bold;
     display: inline-block;
+    margin-top: 10px;
 }
 
 .btn:hover {
