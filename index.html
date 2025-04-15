@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Albalife - Vendas e Doações</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <header>
+        <h1>Albalife</h1>
+        <nav>
+            <a href="#home">Início</a>
+            <a href="#products">Produtos</a>
+            <a href="donation.html">Doações</a>
+            <a href="#contact">Contato</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <section class="hero" id="home">
+            <h2>Bem-vindo ao Albalife!</h2>
+            <p>Compre produtos sustentáveis ou faça uma doação para apoiar nossa causa.</p>
+            <a href="#products" class="btn">Ver Produtos</a>
+            <a href="donation.html" class="btn">Fazer Doação</a>
+            <a href="index2.html" class="btn" target="_blank">Produtos para animais</a>
+        </section>
+
+        <section class="products" id="products">
+            <h2>Nossos Produtos</h2>
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Pesquisar produtos...">
+            </div>
+            <div class="product-grid" id="product-grid">
+                <!-- Produtos serão adicionados dinamicamente aqui -->
+            </div>
+        </section>
+
+        <section class="add-product">
+            <h2>Adicionar Novo Produto</h2>
+            <form id="product-form">
+                <input type="text" id="product-name" placeholder="Nome do Produto" required>
+                <input type="number" id="product-price" placeholder="Preço (€)" step="0.01" required>
+                <input type="url" id="product-image" placeholder="URL da Imagem" required>
+                <button type="submit" class="btn">Adicionar Produto</button>
+            </form>
+        </section>
+
+        <section class="donations" id="donations">
+            <h2>Faça uma Doação</h2>
+            <div class="product-grid">
+                <div class="product-card">
+                    <h3>Doação Livre</h3>
+                    <p>Qualquer valor</p>
+                    <a href="#" class="btn">Doar</a>
+                </div>
+                <div class="product-card">
+                    <h3>Doação Mensal</h3>
+                    <p>A partir de 10,00 €</p>
+                    <a href="#" class="btn">Doar</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer id="contact">
+        <p>© 2025 Albalife. Todos os direitos reservados.</p>
+        <p>Contato: contato@Albalife.com | (351) 940 271 128</p>
+    </footer>
+
+    <script>
+        // Carrega produtos do localStorage ao iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProducts();
+
+            // Adiciona evento de pesquisa
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', () => {
+                filterProducts(searchInput.value);
+            });
+        });
+
+        // Formulário de adição de produto
+        const form = document.getElementById('product-form');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('product-name').value;
+            const price = parseFloat(document.getElementById('product-price').value).toFixed(2);
+            const image = document.getElementById('product-image').value;
+
+            const product = { name, price, image };
+
+            // Salva no localStorage
+            saveProduct(product);
+
+            // Adiciona o produto na página
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            addProductToDOM(product, products.length - 1);
+
+            // Limpa o formulário
+            form.reset();
+
+            // Atualiza a grade com o termo de pesquisa atual
+            const searchInput = document.getElementById('search-input');
+            filterProducts(searchInput.value);
+        });
+
+        function saveProduct(product) {
+            let products = JSON.parse(localStorage.getItem('products')) || [];
+            products.push(product);
+            localStorage.setItem('products', JSON.stringify(products));
+        }
+
+        function loadProducts() {
+            filterProducts(''); // Carrega todos os produtos inicialmente
+        }
+
+        function addProductToDOM(product, index) {
+            const grid = document.getElementById('product-grid');
+            const card = document.createElement('div');
+            card.classList.add('product-card');
+            card.innerHTML = `
+                <img src="${product.image}" alt="${product.name}">
+                <h3>${product.name}</h3>
+                <p>${product.price} €</p>
+                <a href="#" class="btn">Comprar</a>
+                <button class="btn remove-btn" onclick="removeProduct(${index})">Remover</button>
+            `;
+            grid.appendChild(card);
+        }
+
+        function filterProducts(searchTerm) {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = ''; // Limpa a grade
+            let products = JSON.parse(localStorage.getItem('products')) || [];
+            const filteredProducts = products.filter(product => 
+                product.name.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            filteredProducts.forEach((product, index) => addProductToDOM(product, products.indexOf(product)));
+        }
+
+        function removeProduct(index) {
+            let products = JSON.parse(localStorage.getItem('products')) || [];
+            products.splice(index, 1);
+            localStorage.setItem('products', JSON.stringify(products));
+            const searchInput = document.getElementById('search-input');
+            filterProducts(searchInput.value); // Atualiza a grade com o termo de pesquisa atual
+        }
+    </script>
+</body>
+</html>
